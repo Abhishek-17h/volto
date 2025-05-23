@@ -76,6 +76,7 @@ class Html extends Component {
       getStyleElements: PropTypes.func.isRequired,
     }).isRequired,
     markup: PropTypes.string.isRequired,
+    serializedState: PropTypes.string.isRequired,
     store: PropTypes.shape({
       getState: PropTypes.func,
     }).isRequired,
@@ -87,8 +88,7 @@ class Html extends Component {
    * @returns {string} Markup for the component.
    */
   render() {
-    const { extractor, markup, store, criticalCss, apiPath, publicURL } =
-      this.props;
+    const { extractor, markup, criticalCss, apiPath, publicURL } = this.props;
     const head = Helmet.rewind();
     const bodyClass = join(BodyClass.rewind(), ' ');
     const htmlAttributes = head.htmlAttributes.toComponent();
@@ -191,9 +191,7 @@ class Html extends Component {
           <div role="complementary" aria-label="Sidebar" id="sidebar" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.__data=${serialize(
-                loadReducers(store.getState()),
-              )};`,
+              __html: `window.__data=${this.props.serializedState};`,
             }}
             charSet="UTF-8"
           />

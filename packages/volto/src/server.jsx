@@ -40,6 +40,7 @@ import languages from '@plone/volto/constants/Languages.cjs';
 
 import configureStore from '@plone/volto/store';
 import { ReduxAsyncConnect, loadOnServer } from './helpers/AsyncConnect';
+import stableStringify from 'fast-json-stable-stringify';
 
 let locales = {};
 
@@ -283,6 +284,12 @@ server.get('/*', (req, res) => {
         req,
         config,
       ) => {
+        function sanitizeReduxState(state) {
+          const { router, form, browserdetect, ...rest } = state;
+          return rest;
+        }
+        const safeState = sanitizeReduxState(store.getState());
+        const serializedState = stableStringify(safeState);
         res.status(statusCode).send(
           `<!doctype html>
         ${renderToString(
@@ -290,6 +297,7 @@ server.get('/*', (req, res) => {
             extractor={extractor}
             markup={markup}
             store={store}
+            serializedState={serializedState}
             criticalCss={readCriticalCss(req)}
             apiPath={res.locals.detectedHost || config.settings.apiPath}
             publicURL={res.locals.detectedHost || config.settings.publicURL}
