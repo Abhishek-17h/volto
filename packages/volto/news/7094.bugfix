@@ -1,0 +1,1 @@
+Stabilized window.__data in server-rendered HTML to enable proper caching and consistent ETag generation.@Abhishek-17h
